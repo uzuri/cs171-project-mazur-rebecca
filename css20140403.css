@@ -1,0 +1,148 @@
+
+
+body
+{
+	font-family: "Open Sans", sans-serif;
+	font-size: 11px;
+	font-weight: 300;
+	margin: 0;
+	padding: 0 0 0 15em;
+	background-color: white;	
+}
+
+svg
+{
+	display: block;
+	margin: 0 auto;
+	padding: 0;
+	background-repeat: no-repeat;
+	background-position:center; 
+}
+
+
+.node 
+{
+	cursor: pointer;
+}
+
+.node:hover 
+{
+	font-weight: bold;
+	fill: #000;
+}
+
+.link 
+{
+	stroke-opacity: .4;
+	fill: none;
+	pointer-events: none;
+}
+
+.node--target 
+{
+	font-weight: bold;
+	fill: #000;
+}
+
+.link--target 
+{
+	stroke-opacity: 1;
+	stroke-width: 2px;
+}
+
+.link--target 
+{
+	stroke: #d62728;
+}
+
+.link--clicked
+{
+	stroke-opacity: 1;
+	stroke-width: 3px;
+}
+
+.current_focus
+{
+	font-weight: 700;
+}
+
+.current_focus,
+.current_link
+{
+	font-weight: bold;
+	fill: #000;
+}
+
+#detaildiv
+{
+	z-index: 1000;
+	background-color: white;
+}
+
+#detaildiv h2
+{
+	margin-top: 0;
+	color: black;
+}
+
+#detaildiv p
+{
+	line-height: 1.3em;
+}
+
+
+#paddiv
+{
+	margin: 0.5em;
+}
+
+#close circle
+{
+	fill: white;
+	stroke-width: 2px;
+	cursor: pointer;
+}
+
+#close line
+{
+	stroke-width: 2px;
+	stroke: black;
+}
+
+text.label
+{
+	cursor: pointer;
+}
+
+h2, h3
+{
+	color: white;
+}
+
+#controlbanner
+{
+	position: fixed;
+	top: 0;
+	left: 0; 
+	width: 100%;
+	border: 0;
+	margin: 0;
+	padding: 1em;
+	height: 100%;
+	width: 15em;
+	background-color: #A51C30;
+	color: white;
+}
+
+li
+{
+	list-style-image: none;
+	list-style: none;
+}
+
+.highlight
+{
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 0.8em;
+}
