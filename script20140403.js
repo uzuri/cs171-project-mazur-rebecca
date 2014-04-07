@@ -10,6 +10,8 @@
  * Size definitions
  */
  
+ console.log("hi");
+ 
 // Set lower limit for circle size
 var diameter = 850,
 	innerRadius = 190,
@@ -81,7 +83,7 @@ var pie = d3.layout.pie()
 /* **************************************************
  * Drawing & window presets
  */
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#vis").append("svg")
 	.attr("width", width)
 	.attr("height", height)
 	.append("g")
@@ -98,7 +100,7 @@ var nodeg = svg.append("g")
 	.attr("id", "nodes")
 	.selectAll(".node");
 	
-var detail = d3.select("svg").append("foreignObject")
+/*var detail = d3.select("svg").append("foreignObject")
 		.attr("id", "detail")
 		.attr("x", function() {
 			return (width / 2) - (detailsize / 2);
@@ -108,7 +110,37 @@ var detail = d3.select("svg").append("foreignObject")
 		})
 		.attr("height", detailsize)
 		.attr("width", detailsize)
-		.attr("fill", "black");
+		.attr("fill", "black");*/
+		
+
+// Let's try and make this work in IE... doing it the hard way here.  Stupid IE.		
+var viswidth = d3.select("#vis").style("width").replace(/[^.0-9]/g, '');	
+
+var detail2 = d3.select("#vis")
+		.append("div")
+		.attr("id", "detail")
+		.style(
+			{"height" : function() { return detailsize + "px"}, 
+			"width": function() { return detailsize + "px"}, 
+			"top": function() { return Math.floor((height / 2) - (detailsize / 2)) + "px"}, 
+			"left": function() { return Math.floor((viswidth / 2) - (detailsize / 2)) + "px"},
+			"position" : "absolute"});
+		
+d3.select("#vis")
+	.append("div")
+	.attr("id", "closediv")
+	.style(
+		{"height" : "28px", 
+		"width": "28px", 
+		"top": function() { return Math.floor((height / 2) - (detailsize / 2) - 12) + "px"}, 
+		"left": function() { return Math.floor((viswidth / 2) + (detailsize / 2) - 12) + "px"},
+		"position" : "absolute"});		
+
+var svg2 = d3.select("#closediv")
+		.append("svg")
+		.attr("id", "closesvg")
+		.style({"height" : "28px", 
+			"width": "28px"});
 		
 //Center vertically, make it pretty
 window.scrollTo(0, ((height - window.innerHeight) / 2));
@@ -306,7 +338,7 @@ function rotateall(d)
 	arcdeg = (d.startAngle + d.endAngle) * 180/Math.PI;
 	rotval = 270 - (arcdeg / 2);
 	adjtime = centertime;
-	svg.selectAll(".arc")
+	svg.selectAll("#piegroup")
 		.transition()
 		.duration(adjtime)
 		.attr("transform", "rotate(" + rotval + ")");
@@ -496,7 +528,7 @@ function clicked(d)
 	// Trigger Detail View
 	var detailvalue = "<div id=\"paddiv\">" + d3.select(this)[0][0].__data__.summary + "</div>";
 	
-	detaildiv = detail.append("xhtml:div")
+	detaildiv = detail2.append("xhtml:div")
 		.attr("id", "detaildiv")
 		.style({"height": function() { return (detailsize - 4)  + "px"}, "width": function() { return (detailsize - 4) + "px"}, "border" : function() { return "2px solid " + color(currclicked.cat);}, "overflow" : "auto", "opacity" : 0})
 		.html(detailvalue);
@@ -507,29 +539,29 @@ function clicked(d)
 		
 	// Draw close button
 	// Wonder if there's a better way to do this...
-	closebutton = d3.select("svg")
+	closebutton = d3.select("#closesvg")
 		.append("g")
 		.attr("id", "close")
 		.attr("opacity", 0)
 		.on("click", function(d) { closeit(d); });
 		
 	d3.select("#close").append("circle")
-		.attr("cx", radius + (detailsize / 2))
-		.attr("cy", radius - (detailsize / 2))
+		.attr("cx", 12)
+		.attr("cy", 12)
 		.attr("stroke", color(d.cat))
 		.attr("r", 10);
 		
 	d3.select("#close").append("line")
-		.attr("x1", radius + (detailsize / 2) - 5)
-		.attr("y1", radius - (detailsize / 2) - 5)
-		.attr("x2", radius + (detailsize / 2) + 5)
-		.attr("y2", radius - (detailsize / 2) + 5);
+		.attr("x1", 7)
+		.attr("y1", 7)
+		.attr("x2", 17)
+		.attr("y2", 17);
 		
 	d3.select("#close").append("line")
-		.attr("x1", radius + (detailsize / 2) + 5)
-		.attr("y1", radius - (detailsize / 2) - 5)
-		.attr("x2", radius + (detailsize / 2) - 5)
-		.attr("y2", radius - (detailsize / 2) + 5);
+		.attr("x1", 17)
+		.attr("y1", 7)
+		.attr("x2", 7)
+		.attr("y2", 17);
 		
 	closebutton.transition()
 		.duration(centertime)
@@ -663,7 +695,6 @@ function filterit()
 			.attr("id", function(d, i){
 				return "curve" + i;
 			})
-			.attr("transform", "rotate(" + rotval + ")")
 			.style("fill", function(d) { return color(d.data.cat); });
 			
 		labels.enter()

@@ -73,6 +73,11 @@ svg
 	fill: #000;
 }
 
+#vis
+{
+	position: relative;
+}
+
 #detaildiv
 {
 	z-index: 1000;
