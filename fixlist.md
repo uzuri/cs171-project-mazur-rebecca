@@ -5,5 +5,3 @@ Fix List
 * better highlighting of search results
 * font sizes
 * advanced drag to rotate
-* color choice for hover lines
-* advanced tooltips
