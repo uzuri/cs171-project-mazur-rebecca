@@ -39,7 +39,79 @@ This can definitely be done, though it's not in the data.  I'll plan to run this
 
 Good catch here -- the orange color was just a default from the template I built on to.  I plan to experiment with the links always being the color of the targeted node; it should be doable as I already do it with the "zoomed" node.
 
+Feedback from David Downey
+--------------------------
+
+>- the 'snapshots' are good to see the process so far, it was a good idea
+
+>- I like that you have added the 'show only' checkboxes to filter the
+connections. In fact with all checked, the information is quite
+overwhelming. I went straight to research interests and degree programs. In
+this view the connections are clear and informative.
+
+>- the tooltips are good, but I would hasten the transition.
+
+I'm currently using the title tag which has no controls; I'll investigate building a tooltip that I could better control.
+
+>- I like the current colour scheme.
+
+>- change the highlighting from the search to a light coloured box or shadow
+to improve the visibility
+
+I'd contemplated this at one time, but it requires rendering some additional content (svg rects) and I'm not sure I can afford the overhead given that I can't depend on only support "good" browsers (it's pretty strained right now as it is in IE).  I will at least test it, though.  
+
+>- on the other hand, when showing connections, find a way of keeping the
+colour scheme. Some of you earlier snapshots had this. Maybe keep the
+original colour and bold or increase the font instead of making it black.
+
+I'll be looking into a number of things relating to the highlighting.  Most of this is CSS tweaks and can be played with quite easily.
+
+>- add a explanation of the categories that can be in a tooltip when you
+hover over the rings and/or the 'show only' checkbox labels. Especially for
+' Areas'  which is not really clear, but which you explain in the notes is
+' Learning Areas'. Also what is Faculty? All Faculty or just 'Ladder"...
+
+I'll have to see if we have this content, but it would be easy enough to add.
+
+>- perhaps make the font size dynamic, so that for filtered connections, the
+names are more readable.
+
+This is easier said than done, as I'm working with a couple contraints -- not having the nodes' text overlap at the diameter of the pie chart and not having the nodes' text cut off at the edges of the svg element.  I've already done a lot of work with this (that's where the truncated titles came from) but there's still a ways to go.
+
+>- sorry, but just because I saw it - check the trailing comma in
+"Engineering..." and "Energy, Environment..."
+
+I'm already checking for trailing "&", so a check for commas will be easy enough.
+
+>I am missing 'Courses' - this would bring a different perspective and if
+perhaps out of scope, but it would be a natural extension to seeing
+connections with Degree Programs and Teaching Areas. If you were to include
+this additional category, then perhaps limit the starting view to less
+categories checked.
+
+We actually don't have access to structured course content at the moment; Computing does, but I'd put it at 6 months to a year before they can help us get a usable feed of the data.  When I can get it, I do want to at least use it to tie Faculty to Degrees -- right now that connection is not as accurate as I'd like it to be.  
+
+>Other visualisations: I don't know if you are considering this but if so,
+something I might consider is how to show the relative size of categories,
+i.e. the importance of connections. How could this be embellished? For
+example, right now, we only see how important any name or category is
+through the number of connecting lines. If you had some measure of
+importance you could consider an extension with a type of Sankey chart (or
+maybe something with relative bubbles).
+
+This could easily be done -- but we very intentionally didn't do it, due to politics.  We have to be very careful not to elevate one area or person above another.  It might be useful information for an internal vis, though -- who's doing the most, which areas are most cross-disciplinary.
+
+>Coming back to the 'Courses' category, I am wondering if there is some
+hierarchy that you can use to show links to course in a supplementary
+visualisation. For example, if you click on a Degree Program, can you show
+the dependent courses (maybe with a piece of sunburst off that ring) or
+alternatively, link to the courses that faculty are involved in by clicking
+on them - so that this additional info is shown in the box in the middle.
+
+This would probably be doable, though our course requiremenst are so flexible at the moment that it may actually confuse more than it would help. 
+
+
 Feedback summary
 ----------------
 
-A lot of good stuff here, some that I was already painfully aware of (font sizes) and some not.  I should be able to implement most of it with no trouble.
+A lot of good stuff here, some that I was already painfully aware of (font sizes) and some not.  I should be able to implement much of it with no trouble, the exceptions being a couple of suggestions that were outside the data we have access to or off the table for internal reasons.
