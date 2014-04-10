@@ -1,0 +1,191 @@
+#vis_wrapper
+{
+	font-family: "Open Sans", sans-serif;
+	font-size: 11px;
+	font-weight: 300;
+	margin: 0;
+	padding: 0 0 0 82px;
+	background-color: white;
+	z-index: 99999;
+	position: fixed;
+	top: 0;
+	left: 0; 
+	width: 100%;
+	height: 100%;
+	color: black;
+	overflow: auto;
+}
+
+#vis_wrapper svg
+{
+	display: block;
+	margin: 0 auto;
+	padding: 0;
+	background-repeat: no-repeat;
+	background-position:center; 
+}
+
+
+#vis_wrapper .node 
+{
+	cursor: pointer;
+}
+
+#vis_wrapper .node:hover 
+{
+	font-weight: bold;
+	fill: #000;
+}
+
+#vis_wrapper .link 
+{
+	stroke-opacity: .4;
+	fill: none;
+	pointer-events: none;
+}
+
+#vis_wrapper .node--target 
+{
+	font-weight: bold;
+	fill: #000;
+}
+
+#vis_wrapper .link--target 
+{
+	stroke-opacity: 1;
+	stroke-width: 2px;
+}
+
+#vis_wrapper .link--clicked
+{
+	stroke-opacity: 1;
+	stroke-width: 3px;
+}
+
+#vis_wrapper .current_focus
+{
+	font-weight: 700;
+}
+
+#vis_wrapper .current_focus,
+#vis_wrapper .current_link
+{
+	font-weight: bold;
+	fill: #000;
+}
+
+#vis_wrapper #vis
+{
+	position: relative;
+}
+
+#vis_wrapper #detaildiv
+{
+	z-index: 1000;
+	background-color: white;
+}
+
+#vis_wrapper #detaildiv h2
+{
+	margin-top: 0;
+	color: black;
+}
+
+#vis_wrapper #detaildiv p
+{
+	line-height: 1.4em;
+}
+
+#vis_wrapper #detaildiv #facimg img
+{
+	width: 75px;
+	height: auto;
+	float: right;
+	padding: 0 0 5px 5px;
+}
+
+#vis_wrapper #detaildiv #pertitle
+{
+	font-weight: 700;
+}
+
+
+#vis_wrapper #paddiv
+{
+	margin: 0.5em;
+}
+
+#vis_wrapper #close circle
+{
+	fill: white;
+	stroke-width: 2px;
+	cursor: pointer;
+}
+
+#vis_wrapper #close line
+{
+	stroke-width: 2px;
+	stroke: black;
+}
+
+#vis_wrapper text.label
+{
+	cursor: pointer;
+}
+
+#vis_wrapper #controlbanner h2, #vis_wrapper #controlbanner h3
+{
+	color: white;
+}
+
+#vis_wrapper #controlbanner
+{
+	position: fixed;
+	top: 0;
+	left: 0; 
+	width: 100%;
+	border: 0;
+	margin: 0;
+	padding: 1em;
+	height: 100%;
+	width: 165px;
+	background-color: #A51C30;
+	color: white;
+}
+
+#vis_wrapper #controlbanner p
+{
+	line-height: 1.6em;
+}
+
+#vis_wrapper li
+{
+	list-style-image: none;
+}
+
+#vis_wrapper #filterlist li
+{
+	list-style: none;
+}
+	
+
+#vis_wrapper .highlight
+{
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+#vis_wrapper .lowlight
+{
+	opacity: 0.95;
+}
+
+#vis_wrapper #tooltip
+{
+	position: absolute;
+	background-color: white;
+	border: 1px solid black;
+	padding: 0.5em;
+	margin: 0;
+	line-height: 1em;
+}
