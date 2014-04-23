@@ -9,7 +9,7 @@ Screencast:
 
 The files
 --------
-Final code and assets are all included in the root of the repository; all snapshots have been moved to the snapshot directory.  The only library used here is d3; it's linked to externally (due to the way Drupal works, when the project appears live on the SEAS site there will also be a small amount of jQuery, but that has been left out here).  The Process Book is also in the root of the repository (ProcessBook.pdf).
+Final code and assets are all included in the root of the repository; all snapshots have been moved to the snapshot directory.  The only library used here is d3; it's linked to externally (due to the way Drupal works, when the project appears live on the SEAS site there will also be a small amount of jQuery, but that has been left out here for simplicity's sake).  The Process Book is also in the root of the repository (ProcessBook.pdf).
 
 The Drupal module is also included here (drupalmodule); it will be next to useless on any Drupal instance other than SEAS' as it's extremely specific about what it needs to pull out to work, but you can have a look at what's involved at least.  One of these days I plan to generalize it so it can be used against Views, but that will come later.
 
