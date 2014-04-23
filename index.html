@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>SEAS Academic Visualizer -- Havard CS 171 Final Project -- Rebecca Mazur</title>
+</head>
+
+<style type="text/css" media="all">@import url("http://seas.harvard.edu/sites/all/themes/omega/seas2013/css/global.css");</style>
+<style type="text/css" media="all">@import url("final.css");</style>
+
+<style type="text/css">
+
+.content
+{
+	width: 80%;
+	max-width: 1200px;
+	margin: 5em auto;
+	background-color: white;
+	padding: 5%;
+}
+
+#closevis
+{
+	position: fixed;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+}
+
+.spawnvis img
+{
+	cursor: pointer;
+}
+
+</style>
+
+<body>
+
+<div class="content">
+
+<h1>The SEAS Academic Visualizer</h1>
+
+<div style="float: right; width: 300px; margin: 1em; border: 1px solid black; padding: 1em;" class="spawnvis"><img src="button.png" /></div>
+
+<p>SEAS is a strange place.</p>
+
+<p>Think about it.  A young school, not fully separated from FAS and GSAS, no official departments, yet with pseudo-departments in the concept of "teaching areas", teaching areas that don't directly match the degrees offered, and often no clear path from your first day in the door to the sheepskin at the end.</p>
+
+<p>The SEAS Academic Visualizer (SEASAV) is an attempt to give structure where there's very little.  It focuses on connections -- how research interest areas connect to degrees, how degrees connect to teaching areas, how teaching areas connect with faculty.  The hope is that by drawing these connections in a clear and visual manner, we can funnel visitors to more in-depth content and help them understand how SEAS works.</p>
+
+<h2>Video Walkthrough</h2>
+<p>The video below is a short introduction to SEASAV -- if you like, you can skip to the next section to view the visualization itself.</p>
+
+<h2>Ready to Explore SEAS Connections?</h2>
+<p>The visualization available here runs on a snapshot of the SEAS data.  When SEASAV goes live on the public site it will display the most up to date content available, and we encourage you to visit it there as well.</p>
+
+<p class="spawnvis" style="text-align: center"><img src="button.png" /></p>
+
+
+<h2>Resources</h2>
+<p>Much of the basic heirarchical edge bundling code is borrowed from http://bl.ocks.org/mbostock/7607999; the pie/donut chart used for labels came from here: https://gist.github.com/mbostock/3887235, both by Mike Bostock.</p>
+
+<p>The base CSS used on this page is borrowed from <a href="http://www.seas.harvard.edu">http://www.seas.harvard.edu</a></p>
+
+<p>Older snapshots of the project and example JSON files can be found at <a href="http://theredsetter.com/cs171/assetlist.html">http://theredsetter.com/cs171/assetlist.html</a></p>
+
+<p>The git repository for the project is <a href="https://github.com/uzuri/cs171-project-mazur-rebecca">https://github.com/uzuri/cs171-project-mazur-rebecca</a>.</p>
+
+<p>Eventually, the visualization will live on http://www.seas.harvard.edu/, most likely available from the Home page, Academics, Faculty & Research, and other related pages.</p>
+
+</div>
+
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="final.js"></script>
+
+</body>
+</html>

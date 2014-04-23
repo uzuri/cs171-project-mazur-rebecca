@@ -9,7 +9,7 @@ d3.select("body")
 /**
  * Credit where credit is due:  much of the basic heirarchical edge bundling
  * code is borrowed from http://bl.ocks.org/mbostock/7607999; the pie/donut chart used for labels came from 
- * here: https://gist.github.com/mbostock/3887235
+ * here: https://gist.github.com/mbostock/3887235, both by Mike Bostock.
  */
 
 
@@ -354,8 +354,9 @@ function mouseovered(d)
 		.style("opacity", 0)
 		.html(d.title);
 	var mouseloc = d3.mouse(d3.select("#vis")[0][0]),
-		my = ((rotateit(d.x) > 90) && (rotateit(d.x) < 270)) ? mouseloc[1] + 10 : mouseloc[1] - 20,
+		my = ((rotateit(d.x) > 90) && (rotateit(d.x) < 270)) ? mouseloc[1] + 10 : mouseloc[1] - 35,
 		mx = (rotateit(d.x) < 180) ? (mouseloc[0] + 10) :  Math.max(130, (mouseloc[0] - 10 - document.getElementById("tooltip").offsetWidth));
+	console.log(mx);
 	d3.selectAll("#tooltip").style({"top" : my + "px", "left": mx + "px"});
 	d3.selectAll("#tooltip")
 		.transition()
@@ -397,7 +398,7 @@ function mouseovered(d)
 function mouseouted(d) 
 {
 	d3.selectAll("#tooltip").transition().duration(100).remove();
-	d3.selectAll(".link:not(.link--clicked").classed(".link--target", false).attr("stroke", linkcolor);
+	d3.selectAll(".link:not(.link--clicked)").classed("link--target", false).attr("stroke", linkcolor);
 	node.classed("node--target", false);
 }
 
