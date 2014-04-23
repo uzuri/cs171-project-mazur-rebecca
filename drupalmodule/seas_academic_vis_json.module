@@ -1,0 +1,296 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function seas_academic_vis_json_menu() { 
+  $items['academics/visjson'] = array(
+    'page callback' => 'seas_academic_vis_json_endpoint',
+    'access arguments' => array('access content'),
+  );
+  return $items;
+}
+
+
+/**
+ * Implement hook_block_info()
+ */
+function seas_academic_vis_json_block_info()
+{
+	$blocks['seas_academic_vis_block'] = array(
+		'info' => t('SEAS Academic Visualizer'), 
+		'cache' => DRUPAL_CACHE_PER_ROLE, 
+		);
+	return $blocks;
+}
+
+/**
+ * Implement hook_block_view()
+ */
+function seas_academic_vis_json_block_view($delta = '') 
+{	
+	$blockcontent = "";
+	
+	drupal_add_js('sites/all/modules/seas_academic_vis_json/scripts/d3.min.js', 'external');
+	drupal_add_js('sites/all/modules/seas_academic_vis_json/scripts/acadvis.js');
+	
+	switch ($delta) {
+	case 'seas_academic_vis_block':
+		
+		$blockcontent = '
+		<div id="vis_banner">Clicky</div>';
+		
+		$block = array(
+			'content' => t($blockcontent),);
+	}
+
+	return $block;
+}
+
+
+
+/**
+ * Build JSON output
+ */
+function seas_academic_vis_json_endpoint() 
+{
+	
+	// Get info on Faculty & Areas
+	$types1 = "Professor";
+	$types2 = "Assistant Professor";
+	$types3 = "Associate Professor";
+	$dirtype = "directory_entry";
+	$areatype = "group_area";
+	$progtype = "group_program";
+			
+			
+	$nodes = array();
+	$links = array();
+	$visinfo = array();
+	$cats = array();
+	
+	
+	$extantnodes = array();
+	
+	$noindex = "%noindex%";
+	
+	// Get content-type nodes
+	$dbresult = db_query('SELECT `nid`, `type`, `title`, `field_area_tid`, `field_type_value`, `field_primary_title_value`, `field_summary_redesign__value`, `body_summary`, `body_value`, `field_image_fid`,`field_last_name_value` FROM node LEFT JOIN field_data_field_type ON node.nid = field_data_field_type.entity_id LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id LEFT JOIN field_data_field_meta ON node.nid = field_data_field_meta.entity_id LEFT JOIN field_data_field_primary_title ON node.nid = field_data_field_primary_title.entity_id LEFT JOIN field_data_field_summary_redesign_ ON node.nid = field_data_field_summary_redesign_.entity_id LEFT JOIN field_data_body ON node.nid = field_data_body.entity_id LEFT JOIN field_data_field_image ON node.nid = field_data_field_image.entity_id LEFT JOIN field_revision_field_last_name ON node.nid = field_revision_field_last_name.entity_id WHERE (((`type`=:dirtype AND (`field_type_value` = :types1 OR `field_type_value` = :types2 OR `field_type_value` = :types3))) OR `type`=:areatype OR (`type`=:progtype  
+	AND field_meta_metatags_quick NOT LIKE :noindex)) AND `status`=1 GROUP BY `nid` ORDER BY `type`, `field_last_name_value`, `title`;', array('types1' => $types1, 'types2' => $types2, 'types3' => $types3, 'dirtype' => $dirtype, 'areatype' => $areatype, 'progtype' => $progtype, 'noindex' => $noindex));
+	
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		$extantnodes[] = $record->nid;
+		$temparray = array();
+		$temparray["name"] = $record->nid;
+		$temparray["size"] = 1;
+		$temparray["title"] = preg_replace("/ and /", " & ", $record->title);
+		$temparray["cat"] = $record->type;
+		
+		$temparray["summary"] = "<h2>" . $temparray["title"] . "</h2>";
+		
+		if ($record->type == "directory_entry")
+		{
+			$file = file_load($record->field_image_fid);
+			//$image = image_load($file->uri);
+			
+			$temparray["prettycat"] = "Faculty";
+			if (isset($file->uri))
+			{
+				$temparray["summary"] .= '<p id="facimg"><img src="' . file_create_url($file->uri) . '" /></p>';
+			}
+			$temparray["summary"] .= '<p id="pertitle">' . $record->field_primary_title_value . '</p>';
+		}
+		else if ($record->type == "group_area")
+		{
+			$temparray["prettycat"] = "Areas";
+			$temparray["summary"] .= '<p id="desc">' . $record->field_summary_redesign__value . '</p>';
+		}
+		else if ($record->type == "group_program")
+		{
+			$temparray["prettycat"] = "Degree Programs";
+			$temparray["title"] = preg_replace("/Graduate Program in /", "(GR) ", preg_replace("/Undergraduate Program in /", "(UG) ", $temparray["title"]));
+			if (trim($record->body_summary) != "")
+			{
+				$sum = $record->body_summary;
+			}
+			else
+			{
+				$sum = substr($record->body_value, 0, 140);
+			}
+			$temparray["summary"] .= '<p id="desc">' . $sum . '</p>';
+		}
+		else 
+		{
+			// We really should never make it here, but just to be careful
+			$temparray["prettycat"] = "";
+		}
+		
+		$temparray["summary"] .=  "<p id=\"more\"><a href=\"http://www.seas.harvard.edu/node/" . $record->nid . "\">Read more...</a></p>";
+		
+		
+		if(array_key_exists($temparray["prettycat"], $visinfo))
+		{
+			$visinfo[$temparray["prettycat"]]++;
+		}
+		else
+		{
+			$visinfo[$temparray["prettycat"]] = 1;
+			$cats[$temparray["prettycat"]] = $record->type;
+		}
+		$nodes[] = $temparray;
+		unset($temparray);
+	}
+	
+	// Get taxonomy-type nodes
+	
+	$dbresult = db_query('SELECT distinct taxonomy_term_data.tid, taxonomy_term_data.description, name FROM taxonomy_term_data LEFT JOIN taxonomy_term_hierarchy ON taxonomy_term_data.tid = taxonomy_term_hierarchy.tid WHERE taxonomy_term_data.vid = 5 AND NOT taxonomy_term_hierarchy.parent = 0 ORDER BY name');
+	
+	$visinfo["Research Interests"] = 0;
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		$extantnodes[] = "t" . $record->tid;
+		$temparray = array();
+		$temparray["name"] = "t" . $record->tid;
+		$temparray["size"] = 1;
+		$temparray["title"] = preg_replace("/ and /", " & ", preg_replace("/\(.*?\)/", "", $record->name));
+		
+		
+		if (trim($record->description) != "")
+		{
+			$thisdesc = $record->description;
+		}
+		else
+		{
+			$thisdesc = "In keeping with the interdisciplinary nature of modern research, we do not have traditional academic departments. Members of SEAS carry out research in multiple areas and collaborate with colleagues throughout the university.";
+		}
+		
+		
+		$temparray["summary"] = "<h2>" . $temparray["title"] . "</h2><p id=\"desc\">" . $thisdesc . "</p><p id=\"more\"><a href=\"http://www.seas.harvard.edu/faculty-research/research\">Read more...</a></p>";
+		
+		$temparray["cat"] = $cats["Research Interests"] = "research_area";
+		$temparray["prettycat"] = "Research Interests";
+		$visinfo["Research Interests"]++;
+		
+		$nodes[] = $temparray;
+		unset($temparray);
+	}
+
+	
+	// Get links
+	
+	// Directory to areas
+	$dbresult = db_query('SELECT node.nid, field_data_field_area.field_area_tid as atid, btid, nidb  FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id INNER JOIN (SELECT `nid` as nidb, field_data_field_area.field_area_tid as btid FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id WHERE node.type=:areatype) as areatable WHERE node.type=:dirtype AND field_data_field_area.field_area_tid IS NOT NULL AND field_data_field_area.field_area_tid = btid', array('dirtype' => $dirtype, 'areatype' => $areatype));
+	
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		if (in_array($record->nid, $extantnodes) && in_array($record->nidb, $extantnodes))
+		{
+			$links[$record->nid][] = $record->nidb;
+		}
+	}
+	
+	
+	// Directory to research
+	$dbresult = db_query('SELECT node.nid, field_data_field_research_interest.field_research_interest_tid FROM node LEFT JOIN field_data_field_research_interest ON node.nid = field_data_field_research_interest.entity_id WHERE node.type=:dirtype AND field_data_field_research_interest.field_research_interest_tid IS NOT NULL', array('dirtype' => $dirtype));
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		if (in_array($record->nid, $extantnodes) && in_array("t". $record->field_research_interest_tid, $extantnodes))
+		{
+			$links[$record->nid][] = "t" . $record->field_research_interest_tid;
+		}	
+	}
+	
+	
+	// Directory to programs
+	
+	$dbresult = db_query('SELECT node.nid, field_data_field_area.field_area_tid as atid, btid, nidb  FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id INNER JOIN (SELECT `nid` as nidb, field_data_field_area.field_area_tid as btid FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id WHERE node.type=:progtype) as areatable WHERE node.type=:dirtype AND field_data_field_area.field_area_tid IS NOT NULL AND field_data_field_area.field_area_tid = btid', array('dirtype' => $dirtype, 'progtype' => $progtype));
+	
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		if (in_array($record->nid, $extantnodes) && in_array($record->nidb, $extantnodes))
+		{
+			$links[$record->nid][] = $record->nidb;
+		}	
+	}
+	
+	
+	// Areas to programs
+	
+	$dbresult = db_query('SELECT node.nid, field_data_field_area.field_area_tid as atid, btid, nidb  FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id INNER JOIN (SELECT `nid` as nidb, field_data_field_area.field_area_tid as btid FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id WHERE node.type=:progtype) as areatable WHERE node.type=:areatype AND field_data_field_area.field_area_tid IS NOT NULL AND field_data_field_area.field_area_tid = btid', array('areatype' => $areatype, 'progtype' => $progtype));
+	
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		if (in_array($record->nid, $extantnodes) && in_array($record->nidb, $extantnodes))
+		{
+			$links[$record->nid][] = $record->nidb;
+		}
+	}
+	
+	// Areas to research
+	
+	$dbresult = db_query('SELECT DISTINCT nidb, field_research_interest_tid FROM (SELECT node.nid, field_data_field_research_interest.field_research_interest_tid FROM node LEFT JOIN field_data_field_research_interest ON node.nid = field_data_field_research_interest.entity_id WHERE node.type=:dirtype AND field_data_field_research_interest.field_research_interest_tid IS NOT NULL) as dirtable INNER JOIN (SELECT node.nid, field_data_field_area.field_area_tid as atid, btid, nidb  FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id INNER JOIN (SELECT `nid` as nidb, field_data_field_area.field_area_tid as btid FROM node LEFT JOIN field_data_field_area ON node.nid = field_data_field_area.entity_id WHERE node.type=:areatype) as areatable WHERE node.type=:dirtype AND field_data_field_area.field_area_tid IS NOT NULL AND field_data_field_area.field_area_tid = btid) as dirtable2 ON dirtable.nid = dirtable2.nid', array('dirtype' => $dirtype, 'areatype' => $areatype));
+	
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		if (in_array("t" . $record->field_research_interest_tid, $extantnodes) && in_array($record->nidb, $extantnodes))
+		{
+			$links["t" . $record->field_research_interest_tid][] = $record->nidb;
+		}	
+	}
+	
+	
+	// Research to programs
+
+	$dbresult = db_query('SELECT node.nid, field_data_field_research_interest.field_research_interest_tid FROM node LEFT JOIN field_data_field_research_interest ON node.nid = field_data_field_research_interest.entity_id WHERE node.type=:progtype AND field_data_field_research_interest.field_research_interest_tid IS NOT NULL', array('progtype' => $progtype));
+	
+	
+	while ($record = $dbresult->fetch()) 
+	{
+		if (in_array($record->nid, $extantnodes) && in_array("t". $record->field_research_interest_tid, $extantnodes))
+		{
+			$links[$record->nid][] = "t" . $record->field_research_interest_tid;
+		}
+	}
+	
+	
+	// Build links
+	
+	$blankarray = array();
+	
+	for ($i = 0; $i < count($nodes); $i++)
+	{
+		if ($links[$nodes[$i]["name"]])
+		{
+			$nodes[$i]["imports"] = $links[$nodes[$i]["name"]];
+		}
+		else
+		{
+			$nodes[$i]["imports"] = $blankarray;
+		}
+	}
+	
+	$tempinfo = array();
+	$tempitem = array();
+	
+	foreach ($visinfo as $key => $value)
+	{
+		$tempitem['name'] = $key;
+		$tempitem['value'] = $value;
+		$tempitem['cat'] = $cats[$key];
+		$tempinfo[] = $tempitem;
+		$tempitem = array();
+	}
+	
+	$graph = array();
+	$graph['nodes'] = $nodes;
+	$graph['info'] = $tempinfo;	
+	drupal_json_output($graph);
+}

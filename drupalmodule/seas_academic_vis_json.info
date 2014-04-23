@@ -1,0 +1,7 @@
+name = SEAS Academic Visualizer
+description = Manages the block and JSON creation that drives the Academic Visualizer tool
+package = SEAS
+core = 7.x
+
+
+stylesheets[all][] = css/acadvis.css
