@@ -750,7 +750,7 @@ function draw()
 	/* **************************************************
 	 * Data acquisition
 	 */
-	d3.json("fakefac5.json", function(error, classes) {
+	d3.json("final.json", function(error, classes) {
 			
 			
 			
