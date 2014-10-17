@@ -1,3 +1,19 @@
+
+/**
+ * CS 171 Final Project; Rebecca Mazur
+ *    This tool was built for the use of Harvard's School of Engineering and Applied Sciences
+ *    Feel free to use this code as a jumping-off point; all we ask is that you not strip out this credit block
+ *    and that you change the look to not be "Harvard-y"
+ *
+ *    Credit where credit is due:  much of the basic heirarchical edge bundling
+ *    code is borrowed from http://bl.ocks.org/mbostock/7607999; the pie/donut chart used for labels came from 
+ *    here: https://gist.github.com/mbostock/3887235, both by Mike Bostock.
+ *    
+ *    This code is not maintained; there may be refinements or adjustments that have been made to the live HSEAS
+ *    site that do not appear here
+ */
+
+
 d3.selectAll(".spawnvis").on("click", function(){
 	draw();
 });
@@ -16,12 +32,6 @@ function draw()
 	d3.selectAll("#closevis").on("click", function(){
 		d3.selectAll("#vis_wrapper").remove();
 	});
-	
-	/**
-	 * Credit where credit is due:  much of the basic heirarchical edge bundling
-	 * code is borrowed from http://bl.ocks.org/mbostock/7607999; the pie/donut chart used for labels came from 
-	 * here: https://gist.github.com/mbostock/3887235, both by Mike Bostock.
-	 */
 	
 	
 	/* **************************************************
