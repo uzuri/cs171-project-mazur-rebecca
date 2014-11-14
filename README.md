@@ -1,3 +1,5 @@
+Note: Existing code has a known issue with recent versions of Firefox (32 & 33 at the very least) where initial rotation of the view will make the labels disappear.  This appears to be a FF bug as opposed to my bug, but it's still unpleasant.  You can turn off the rotation with the least amount of fuss by commenting out the contents of the rotateall function.
+
 cs171-project-mazur-rebecca
 ===========================
 
